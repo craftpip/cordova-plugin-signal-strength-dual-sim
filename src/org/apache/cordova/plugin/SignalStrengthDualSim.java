@@ -27,9 +27,8 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-
-            mTelephonyManager = TelephonyManager.from(Context);
-            mSubscriptionManager = SubscriptionManager.from(Context);
+            mTelephonyManager = TelephonyManager.from(Context.TELEPHONY_SERVICE);
+            mSubscriptionManager = SubscriptionManager.from(Context.TELEPHONY_SERVICE);
 
             List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
 
@@ -41,10 +40,10 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             if (num <= 0)
                 return false;
 
-            if(action.equals("0")){
+            if(action.equals("0")) {
                 ssListener = new SignalStrengthStateListener(subscriptions.get(0).getSubscriptionId());
             }
-            if(action.equals("1")){
+            if(action.equals("1")) {
                 ssListener = new SignalStrengthStateListener(subscriptions.get(1).getSubscriptionId());
             }
 
@@ -55,14 +54,14 @@ public class SignalStrengthDualSim extends CordovaPlugin {
                     try {
                             Thread.sleep(200);
                     } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            return false;
                     }
                     if (counter++ >= 5)
                     {
-                            break;
+                            break; // return -1
                     }
             }
-            callbackContext.success(dbm);
+            callbackContext.success(dbm); // program ends here.
             return true;
     }
 
