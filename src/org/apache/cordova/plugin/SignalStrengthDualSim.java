@@ -10,6 +10,7 @@ import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.List;
 
 public class SignalStrengthDualSim extends CordovaPlugin {
 
@@ -28,7 +29,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
 
             mTelephonyManager = TelephonyManager.from(Context);
-            mSubscriptionManager = SubscriptionManager.from(mContext);
+            mSubscriptionManager = SubscriptionManager.from(Context);
 
             List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
 
@@ -48,14 +49,6 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             }
 
             mTelephonyManager.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-
-            // TelephonyManager tm = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            // if(action.equals("0")){
-            //     tm.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-            // }
-            // if(action.equals("1")){
-            //     tm.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-            // }
 
             int counter = 0;
             while ( dbm == -1) {
