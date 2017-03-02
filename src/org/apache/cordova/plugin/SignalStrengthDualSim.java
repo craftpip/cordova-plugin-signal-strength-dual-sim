@@ -3,7 +3,6 @@ package org.apache.cordova.plugin;
 import android.content.Context;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-// import android.telephony.MultiSimTelephonyManager;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;
@@ -18,53 +17,43 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
     SignalStrengthStateListener ssListener;
     int dbm = -1;
+    TelephonyManager mTelephonyManager;
+    SubscriptionManager mSubscriptionManager;
 
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-    // MultiSimClass = Class.forName("android.telephony.MultiSimTelephonyManager");
-    // for (Constructor<?> constructor : MultiSimClass.getConstructors()){
-    //      if (constructor.getParameterTypes().length == 2){
-    //           try {
-    //     //     if(action.equals("0")){
-    //     //            multiSimTelephonyManager1 = constructor.newInstance(context,0);
-    //     //     }else{
-    //     //            multiSimTelephonyManager2 = constructor.newInstance(context,1);
-    //     //     }
-    //           }
-    //           catch (InterruptedException e) {
-    //     //   e.printStackTrace();
-    //           }
-    //      }
-    // }
 
-            ssListener = new SignalStrengthStateListener();
+            mTelephonyManager = TelephonyManager.from(Context);
+            mSubscriptionManager = SubscriptionManager.from(mContext);
 
-             final Class<?> tmClass = Class.forName("android.telephony.MultiSimTelephonyManager");
-                // MultiSimTelephonyManager Class found
-                // getDefault() gets the manager instances for specific slots
-                Method methodDefault = tmClass.getDeclaredMethod("getDefault", int.class);
-                methodDefault.setAccessible(true);
-                try {
-                    if(action.equals("0")){
-                        MultiSimTelephonyManager telephonyManagerMultiSim = (MultiSimTelephonyManager)methodDefault.invoke(null, 0);
-                    }
-                    if(action.equals("1")){
-                        MultiSimTelephonyManager telephonyManagerMultiSim = (MultiSimTelephonyManager)methodDefault.invoke(null, 1);
-                    }
-                    telephonyManagerMultiSim.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    return false;
-                }
+            List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
 
+            if (subscriptions == null){
+                return false;
+            }
 
-          //  if (action.equals("0")) {
-          //          multiSimTelephonyManager1.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-         //   }
-         //   if (action.equals("1")) {
-         //           multiSimTelephonyManager2.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-         //   }
+            final int num = subscriptions.size();
+            if (num <= 0)
+                return false;
+
+            if(action.equals("0")){
+                ssListener = new SignalStrengthStateListener(subscriptions.get(0).getSubscriptionId());
+            }
+            if(action.equals("1")){
+                ssListener = new SignalStrengthStateListener(subscriptions.get(1).getSubscriptionId());
+            }
+
+            mTelephonyManager.listen(mPhoneStateListener[i], PhoneStateListener.LISTEN_SIGNAL_STRENGTHS); 
+
+            // TelephonyManager tm = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            // if(action.equals("0")){
+            //     tm.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+            // }
+            // if(action.equals("1")){
+            //     tm.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+            // }
 
             int counter = 0;
             while ( dbm == -1) {
@@ -84,7 +73,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
 
     class SignalStrengthStateListener extends PhoneStateListener {
-
+        public SignalStrengthStateListener(int subId) { 
+            super(subId); 
+        } 
         @Override
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
                 super.onSignalStrengthsChanged(signalStrength);
