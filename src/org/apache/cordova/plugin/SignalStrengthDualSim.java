@@ -27,7 +27,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-            mTelephonyManager = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            
             mSubscriptionManager = (SubscriptionManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             // mSubscriptionManager = SubscriptionManager.from(Context);
 
@@ -41,13 +41,17 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             if (num <= 0)
                 return false;
 
+            int subId = 0;
             if(action.equals("0")) {
-                ssListener = new SignalStrengthStateListener(subscriptions.get(0).getSubscriptionId());
+                subId = subscriptions.get(0).getSubscriptionId();
             }
             if(action.equals("1")) {
-                ssListener = new SignalStrengthStateListener(subscriptions.get(1).getSubscriptionId());
+                subId = subscriptions.get(1).getSubscriptionId();
             }
 
+            ssListener = new SignalStrengthStateListener();
+            mTelephonyManager = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            mTelephonyManager = mTelephonyManager.createForSubscriptionId(subId)
             mTelephonyManager.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
             int counter = 0;
@@ -69,9 +73,6 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
 
     class SignalStrengthStateListener extends PhoneStateListener {
-        public SignalStrengthStateListener(int subId) { 
-            super(subId); 
-        } 
         @Override
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
                 super.onSignalStrengthsChanged(signalStrength);
