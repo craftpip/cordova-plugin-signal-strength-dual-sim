@@ -36,7 +36,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
             if (action.equals("dbm2")) {
                     ssListener2 = new SignalStrengthStateListener();
-                    TelephonyManager tm = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                    TelephonyManager tm2 = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
                     tm.listenGemini(ssListener2, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS, 1);
                     int counter = 0;
                     while ( dbm2 == -1) {
@@ -82,6 +82,8 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
     SignalStrengthStateListener ssListener;
     SignalStrengthStateListener ssListener2;
+    TelephonyManager tm;
+    TelephonyManager tm2;
     int dbm = -1;
     int dbm2 = -1;
 
