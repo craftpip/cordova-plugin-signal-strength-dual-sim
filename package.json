@@ -1,0 +1,39 @@
+{
+  "name": "cordova-plugin-signal-strength-dual-sim",
+  "version": "0.0.1",
+  "description": "Apache Cordova GSM Signal Strength Plugin",
+  "cordova": {
+    "id": "cordova-plugin-signal-strength",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craftpip/cordova-plugin-signal-strength-dual-sim"
+  },
+  "keywords": [
+    "gsm",
+    "signal",
+    "strength",
+    "dual",
+    "dbm",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=5.0.0"
+    }
+  ],
+  "author": "Peter Vojtek",
+  "contributors": [
+    "Boniface Pereira"
+  ],
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/craftpip/cordova-plugin-signal-strength-dual-sim/issues"
+  },
+  "homepage": "https://github.com/craftpip/cordova-plugin-signal-strength-dual-sim"
+}
