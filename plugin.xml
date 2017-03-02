@@ -10,7 +10,7 @@
   <platform name="android">
     <config-file parent="/*" target="res/xml/config.xml">
       <feature name="SignalStrength">
-        <param name="android-package" value="org.apache.cordova.plugin.SignalStrength"/>
+        <param name="android-package" value="org.apache.cordova.plugin.SignalStrengthDualSim"/>
         <param name="onload" value="true" />
       </feature>
     </config-file>
