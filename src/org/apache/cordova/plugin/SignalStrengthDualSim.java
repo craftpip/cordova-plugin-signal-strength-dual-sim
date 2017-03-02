@@ -28,8 +28,11 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     private static final String HAS_READ_PERMISSION = "hasReadPermission";
     private static final String REQUEST_READ_PERMISSION = "requestReadPermission";
 
+    private CallbackContext callback;
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        callback = callbackContext;
 
         LOG.i(LOG_TAG, "STARTING");
         LOG.i(LOG_TAG, "Params: " + action);
