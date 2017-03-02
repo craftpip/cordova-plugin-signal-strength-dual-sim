@@ -11,50 +11,55 @@ import org.json.JSONObject;
 
 public class SignalStrengthDualSim extends CordovaPlugin {
 
+    int simSlot = 0;
+    MultiSimTelephonyManager multiSimTelephonyManager1;
+    MultiSimTelephonyManager multiSimTelephonyManager2;
+
+    SignalStrengthStateListener ssListener;
+    int dbm = -1;
+
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-            if (action.equals("dbm")) {
-                    ssListener = new SignalStrengthStateListener();
-                    TelephonyManager tm = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                    tm.listenGemini(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS, 0);
-                    int counter = 0;
-                    while ( dbm == -1) {
-                            try {
-                                    Thread.sleep(200);
-                            } catch (InterruptedException e) {
-                                    e.printStackTrace();
+            MultiSimClass = Class.forName("android.telephony.MultiSimTelephonyManager");
+            for (Constructor<?> constructor : MultiSimClass.getConstructors()){
+                 if (constructor.getParameterTypes().length == 2){
+                      try {
+                            if(action.equals("0"){
+                                   multiSimTelephonyManager1 = constructor.newInstance(context,0);
+                            }else{
+                                   multiSimTelephonyManager2 = constructor.newInstance(context,1);
                             }
-                            if (counter++ >= 5)
-                            {
-                                    break;
-                            }
-                    }
-                    callbackContext.success(dbm);
-                    return true;
+                     }
+                 }
             }
 
-            if (action.equals("dbm2")) {
-                    ssListener2 = new SignalStrengthStateListener();
-                    TelephonyManager tm2 = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                    tm.listenGemini(ssListener2, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS, 1);
-                    int counter = 0;
-                    while ( dbm2 == -1) {
-                            try {
-                                    Thread.sleep(200);
-                            } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                            }
-                            if (counter++ >= 5)
-                            {
-                                    break;
-                            }
-                    }
-                    callbackContext.success(dbm2);
-                    return true;
+            ssListener = new SignalStrengthStateListener();
+
+            if (action.equals("0")) {
+                    multiSimTelephonyManager1.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+            }
+            if (action.equals("1")) {
+                    multiSimTelephonyManager2.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
             }
 
-            return false;
+            int counter = 0;
+            while ( dbm == -1) {
+                    try {
+                            Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                            e.printStackTrace();
+                    }
+                    if (counter++ >= 5)
+                    {
+                            break;
+                    }
+            }
+            callbackContext.success(dbm);
+            return true;
+
+            // return false;
     }
 
 
@@ -68,23 +73,5 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         }
 
     }
-
-    class SignalStrengthStateListener2 extends PhoneStateListener {
-
-        @Override
-        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
-                super.onSignalStrengthsChanged(signalStrength);
-                int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
-                dbm2 = (2 * tsNormSignalStrength) - 113;     // -> dBm
-        }
-
-    }
-
-    SignalStrengthStateListener ssListener;
-    SignalStrengthStateListener ssListener2;
-    TelephonyManager tm;
-    TelephonyManager tm2;
-    int dbm = -1;
-    int dbm2 = -1;
 
 }

@@ -4,7 +4,7 @@ function SignalStrengthDualSim() {
         sim -= 1;
         return cordova.exec(callback, function (err) {
             callback(-1);
-        }, "SignalStrength", "dbm" + (sim ? 'sim' : ''), []);
+        }, "SignalStrengthDualSim", sim.toString(), []);
     };
 }
 
