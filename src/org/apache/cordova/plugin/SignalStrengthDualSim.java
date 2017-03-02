@@ -27,9 +27,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-            TelephonyManager mTelephonyManager = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            // mTelephonyManager = TelephonyManager.from(Context.TELEPHONY_SERVICE);
-            mSubscriptionManager = SubscriptionManager.from(Context);
+            mTelephonyManager = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            mSubscriptionManager = (SubscriptionManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+            // mSubscriptionManager = SubscriptionManager.from(Context);
 
             List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
 
