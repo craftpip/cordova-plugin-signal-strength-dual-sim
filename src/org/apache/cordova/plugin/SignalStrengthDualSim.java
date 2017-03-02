@@ -31,7 +31,10 @@ public class SignalStrengthDualSim extends CordovaPlugin {
                             }else{
                                    multiSimTelephonyManager2 = constructor.newInstance(context,1);
                             }
-                     }
+                      }
+                      catch (InterruptedException e) {
+                          e.printStackTrace();
+                      }
                  }
             }
 
