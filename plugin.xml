@@ -4,8 +4,8 @@
   <description>GSM Signal Strength Plugin</description>
   <license>Apache 2.0</license>
   <keywords>cordova,signal,strength,gsm,dBa,network</keywords>
-  <js-module name="signal-strength" src="www/signal-strength.js">
-    <clobbers target="signal-strength"/>
+  <js-module name="signal-strength-dual-sim" src="www/signal-strength-dual-sim.js">
+    <clobbers target="signal-strength-dual-sim"/>
   </js-module>
   <platform name="android">
     <config-file parent="/*" target="res/xml/config.xml">
