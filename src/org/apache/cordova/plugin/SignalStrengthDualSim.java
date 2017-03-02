@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SignalStrength extends CordovaPlugin {
+public class SignalStrengthDualSim extends CordovaPlugin {
 
 @Override
 public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
