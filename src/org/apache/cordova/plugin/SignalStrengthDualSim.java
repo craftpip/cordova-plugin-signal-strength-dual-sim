@@ -1,17 +1,27 @@
 package org.apache.cordova.plugin;
 
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.LOG;
+
 import android.content.Context;
+
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.Manifest;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.LOG;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.List;
+
 
 public class SignalStrengthDualSim extends CordovaPlugin {
     // MultiSimTelephonyManager multiSimTelephonyManager1;
@@ -27,7 +37,6 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     private static final String SIM_TWO_ASU = "Sim2ASU";
     private static final String HAS_READ_PERMISSION = "hasReadPermission";
     private static final String REQUEST_READ_PERMISSION = "requestReadPermission";
-
     private CallbackContext callback;
 
     @Override
