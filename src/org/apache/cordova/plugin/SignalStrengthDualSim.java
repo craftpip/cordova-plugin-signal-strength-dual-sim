@@ -7,14 +7,13 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.List;
 
 public class SignalStrengthDualSim extends CordovaPlugin {
-
-    int simSlot = 0;
     // MultiSimTelephonyManager multiSimTelephonyManager1;
     // MultiSimTelephonyManager multiSimTelephonyManager2;
 
@@ -23,11 +22,19 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     TelephonyManager mTelephonyManager;
     SubscriptionManager mSubscriptionManager;
 
+    private static final String LOG_TAG = "CordovaPluginSignalStrengthDualSim";
+    private static final String SIM_ONE_ASU = "Sim1ASU";
+    private static final String SIM_TWO_ASU = "Sim2ASU";
+    private static final String HAS_READ_PERMISSION = "hasReadPermission";
+    private static final String REQUEST_READ_PERMISSION = "requestReadPermission";
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
-            
+        LOG.i(LOG_TAG, "STARTING");
+        LOG.i(LOG_TAG, "Params: " + action);
+
+        if(SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)){
             mSubscriptionManager = (SubscriptionManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
             // mSubscriptionManager = SubscriptionManager.from(Context);
 
@@ -41,6 +48,8 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             if (num <= 0)
                 return false;
 
+            LOG.i(LOG_TAG, "Num: " + num);
+
             int subId = 0;
             if(action.equals("0")) {
                 subId = subscriptions.get(0).getSubscriptionId();
@@ -48,6 +57,8 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             if(action.equals("1")) {
                 subId = subscriptions.get(1).getSubscriptionId();
             }
+
+            LOG.i(LOG_TAG, "SubID: " + subId);
 
             ssListener = new SignalStrengthStateListener();
             mTelephonyManager = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
@@ -67,10 +78,56 @@ public class SignalStrengthDualSim extends CordovaPlugin {
                     }
             }
 
+            LOG.i(LOG_TAG, "Dbm: " + dbm);
             callbackContext.success(dbm); // program ends here.
+
             return true;
+        } else if (HAS_READ_PERMISSION.equals(action)){
+            hasReadPermission();
+            return true;  
+        } else if(REQUEST_READ_PERMISSION.equals(action)) {
+            requestReadPermission();
+            return true;
+        } else {
+            return false;
+        }
     }
 
+
+  private void hasReadPermission() {
+    this.callback.sendPluginResult(new PluginResult(PluginResult.Status.OK,
+      simPermissionGranted(Manifest.permission.READ_PHONE_STATE)));
+  }
+
+  private void requestReadPermission() {
+    requestPermission(Manifest.permission.READ_PHONE_STATE);
+  }
+
+  private boolean simPermissionGranted(String type) {
+    if (Build.VERSION.SDK_INT < 23) {
+      return true;
+    }
+    return cordova.hasPermission(type);
+  }
+
+      private void requestPermission(String type) {
+        LOG.i(LOG_TAG, "requestPermission");
+        if (!simPermissionGranted(type)) {
+          cordova.requestPermission(this, 12345, type);
+        } else {
+          this.callback.success();
+        }
+      }
+
+  @Override
+  public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException
+  {
+    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+      this.callback.success();
+    } else {
+      this.callback.error("Permission denied");
+    }
+  }
 
     class SignalStrengthStateListener extends PhoneStateListener {
         @Override
