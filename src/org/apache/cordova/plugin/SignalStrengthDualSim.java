@@ -24,17 +24,15 @@ import java.util.List;
 
 
 public class SignalStrengthDualSim extends CordovaPlugin {
-    // MultiSimTelephonyManager multiSimTelephonyManager1;
-    // MultiSimTelephonyManager multiSimTelephonyManager2;
 
-    SignalStrengthStateListener ssListener;
     int dbm = -1;
+    int asu = 0;
     TelephonyManager mTelephonyManager;
-    SubscriptionManager mSubscriptionManager;
+    SignalStrengthStateListener ssListener;
 
     private static final String LOG_TAG = "CordovaPluginSignalStrengthDualSim";
     private static final String SIM_ONE_ASU = "Sim1";
-    private static final String SIM_TWO_ASU = "Sim2";
+    private static final String SIM_TWO_ASU = "Sim2"; // not supported at the moment.
     private static final String SIM_COUNT = "SimCount";
     private static final String HAS_READ_PERMISSION = "hasReadPermission";
     private static final String REQUEST_READ_PERMISSION = "requestReadPermission";
@@ -46,7 +44,6 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
         LOG.i(LOG_TAG, "STARTING");
         LOG.i(LOG_TAG, "Params: " + action);
-
 
         if (SIM_COUNT.equals(action)) {
 
@@ -61,39 +58,10 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
         } else if (SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)) {
 
-            mSubscriptionManager = (SubscriptionManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-
-            int slot; if (SIM_ONE_ASU.equals(action)) {
-                slot = 0;
-            } else {
-                slot = 1;
-            }
-
-            SubscriptionInfo subscriptionInfoObject = mSubscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(slot);
-
-            if (subscriptionInfoObject == null) {
-                this.callback.error("Subscription returned null");
-            }
-
-            int subId = subscriptionInfoObject.getSubscriptionId();
-            LOG.i(LOG_TAG, "SubID: " + subId);
-
             ssListener = new SignalStrengthStateListener();
-//            TelephonyManager defaultTelephonyManager  = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
             Context context = cordova.getActivity().getApplicationContext();
-            TelephonyManager defaultTelephonyManager  = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-//            LOG.i(LOG_TAG, "1: " + subId);
-
-            TelephonyManager telephonyManagerSub;
-            try {
-//                telephonyManagerSub = (TelephonyManager) defaultTelephonyManager.createForSubscriptionId(1);
-//                LOG.i(LOG_TAG, "2: " + subId);
-                defaultTelephonyManager.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-                LOG.i(LOG_TAG, "3: " + subId);
-            } catch (Exception e) {
-                LOG.i(LOG_TAG, "2ERR: " + e.getMessage());
-                return false;
-            }
+            TelephonyManager defaultTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            defaultTelephonyManager.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
             int counter = 0;
             while (dbm == -1) {
@@ -109,8 +77,43 @@ public class SignalStrengthDualSim extends CordovaPlugin {
                 }
             }
 
-            LOG.i(LOG_TAG, "Dbm: " + dbm);
-            callbackContext.success(dbm);
+            String operatorName = defaultTelephonyManager.getNetworkOperatorName();
+            String operator = defaultTelephonyManager.getNetworkOperator();
+            int networkType = defaultTelephonyManager.getNetworkType();
+
+            String netWorkTypeName;
+            switch (networkType) {
+                case TelephonyManager.NETWORK_TYPE_GPRS:
+                case TelephonyManager.NETWORK_TYPE_EDGE:
+                case TelephonyManager.NETWORK_TYPE_CDMA:
+                case TelephonyManager.NETWORK_TYPE_1xRTT:
+                case TelephonyManager.NETWORK_TYPE_IDEN:
+                    netWorkTypeName = "2G";
+                case TelephonyManager.NETWORK_TYPE_UMTS:
+                case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                case TelephonyManager.NETWORK_TYPE_HSDPA:
+                case TelephonyManager.NETWORK_TYPE_HSUPA:
+                case TelephonyManager.NETWORK_TYPE_HSPA:
+                case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                case TelephonyManager.NETWORK_TYPE_EHRPD:
+                case TelephonyManager.NETWORK_TYPE_HSPAP:
+                    netWorkTypeName = "3G";
+                case TelephonyManager.NETWORK_TYPE_LTE:
+                    netWorkTypeName = "4G";
+                default:
+                    netWorkTypeName = "unknown";
+                    break;
+            }
+
+            JSONObject response = new JSONObject();
+            response.put('dbm', dbm);
+            response.put('asu', asu);
+            response.put('operator_name', operatorName);
+            response.put('operator', operator);
+            response.put('networkType', netWorkTypeName)
+
+            callbackContext.success(response);
             return true;
         } else if (HAS_READ_PERMISSION.equals(action)) {
             hasReadPermission();
@@ -161,11 +164,11 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     class SignalStrengthStateListener extends PhoneStateListener {
         @Override
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
-            LOG.i(LOG_TAG, "SignalstrengthCalled , ");
             super.onSignalStrengthsChanged(signalStrength);
             int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
             LOG.i(LOG_TAG, "Signalstrength, " + tsNormSignalStrength);
-            dbm = (2 * tsNormSignalStrength) - 113;     // -> dBm
+            asu = tsNormSignalStrength;
+            dbm = (2 * tsNormSignalStrength) - 113;
         }
     }
 
