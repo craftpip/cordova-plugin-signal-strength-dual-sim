@@ -70,6 +70,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             String operatorName = defaultTelephonyManager.getNetworkOperatorName();
             String operator = defaultTelephonyManager.getNetworkOperator();
             int networkType = defaultTelephonyManager.getNetworkType();
+            int networkDataType = defaultTelephonyManager.getDataNetworkType();
 
 
             String netWorkTypeName;
@@ -109,6 +110,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             response.put("operator_name", operatorName);
             response.put("operator", operator);
             response.put("networkType", networkType);
+            response.put("dataNetworkType", networkDataType);
             response.put("level", level);
 
             callbackContext.success(response);
