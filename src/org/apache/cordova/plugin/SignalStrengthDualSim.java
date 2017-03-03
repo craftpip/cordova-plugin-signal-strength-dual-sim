@@ -35,6 +35,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     private static final String LOG_TAG = "CordovaPluginSignalStrengthDualSim";
     private static final String SIM_ONE_ASU = "Sim1ASU";
     private static final String SIM_TWO_ASU = "Sim2ASU";
+    private static final String SIM_COUNT = 'SimCount';
     private static final String HAS_READ_PERMISSION = "hasReadPermission";
     private static final String REQUEST_READ_PERMISSION = "requestReadPermission";
     private CallbackContext callback;
@@ -46,13 +47,24 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         LOG.i(LOG_TAG, "STARTING");
         LOG.i(LOG_TAG, "Params: " + action);
 
-        if(SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)){
-            mSubscriptionManager = (SubscriptionManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-            // mSubscriptionManager = SubscriptionManager.from(Context);
+
+        if (SIM_COUNT.equals(action)) {
 
             List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
+            if (subscriptions == null) {
+                this.callback.error('Subscriptions returned null');
+                return false;
+            }
 
-            if (subscriptions == null){
+            final int num = subscriptions.size();
+            this.callback.success(num);
+
+        } else if (SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)) {
+
+            mSubscriptionManager = (SubscriptionManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+            List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
+
+            if (subscriptions == null) {
                 return false;
             }
 
@@ -63,10 +75,10 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             LOG.i(LOG_TAG, "Num: " + num);
 
             int subId = 0;
-            if(action.equals("0")) {
+            if (action.equals("0")) {
                 subId = subscriptions.get(0).getSubscriptionId();
             }
-            if(action.equals("1")) {
+            if (action.equals("1")) {
                 subId = subscriptions.get(1).getSubscriptionId();
             }
 
@@ -78,26 +90,24 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             mTelephonyManager1.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
             int counter = 0;
-            while ( dbm == -1) {
-                    try {
-                            Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                            return false;
-                    }
-                    if (counter++ >= 5)
-                    {
-                            break; // return -1
-                    }
+            while (dbm == -1) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    return false;
+                }
+                if (counter++ >= 5) {
+                    break; // return -1
+                }
             }
 
             LOG.i(LOG_TAG, "Dbm: " + dbm);
-            callbackContext.success(dbm); // program ends here.
-
+            callbackContext.success(dbm);
             return true;
-        } else if (HAS_READ_PERMISSION.equals(action)){
+        } else if (HAS_READ_PERMISSION.equals(action)) {
             hasReadPermission();
-            return true;  
-        } else if(REQUEST_READ_PERMISSION.equals(action)) {
+            return true;
+        } else if (REQUEST_READ_PERMISSION.equals(action)) {
             requestReadPermission();
             return true;
         } else {
@@ -106,47 +116,46 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     }
 
 
-  private void hasReadPermission() {
-    this.callback.sendPluginResult(new PluginResult(PluginResult.Status.OK,
-      simPermissionGranted(Manifest.permission.READ_PHONE_STATE)));
-  }
-
-  private void requestReadPermission() {
-    requestPermission(Manifest.permission.READ_PHONE_STATE);
-  }
-
-  private boolean simPermissionGranted(String type) {
-    if (Build.VERSION.SDK_INT < 23) {
-      return true;
+    private void hasReadPermission() {
+        this.callback.sendPluginResult(new PluginResult(PluginResult.Status.OK,
+                simPermissionGranted(Manifest.permission.READ_PHONE_STATE)));
     }
-    return cordova.hasPermission(type);
-  }
 
-      private void requestPermission(String type) {
+    private void requestReadPermission() {
+        requestPermission(Manifest.permission.READ_PHONE_STATE);
+    }
+
+    private boolean simPermissionGranted(String type) {
+        if (Build.VERSION.SDK_INT < 23) {
+            return true;
+        }
+        return cordova.hasPermission(type);
+    }
+
+    private void requestPermission(String type) {
         LOG.i(LOG_TAG, "requestPermission");
         if (!simPermissionGranted(type)) {
-          cordova.requestPermission(this, 12345, type);
+            cordova.requestPermission(this, 12345, type);
         } else {
-          this.callback.success();
+            this.callback.success();
         }
-      }
-
-  @Override
-  public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException
-  {
-    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-      this.callback.success();
-    } else {
-      this.callback.error("Permission denied");
     }
-  }
+
+    @Override
+    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            this.callback.success();
+        } else {
+            this.callback.error("Permission denied");
+        }
+    }
 
     class SignalStrengthStateListener extends PhoneStateListener {
         @Override
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
-                super.onSignalStrengthsChanged(signalStrength);
-                int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
-                dbm = (2 * tsNormSignalStrength) - 113;     // -> dBm
+            super.onSignalStrengthsChanged(signalStrength);
+            int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
+            dbm = (2 * tsNormSignalStrength) - 113;     // -> dBm
         }
 
     }
