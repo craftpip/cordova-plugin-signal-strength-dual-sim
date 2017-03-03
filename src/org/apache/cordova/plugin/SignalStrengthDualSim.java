@@ -33,9 +33,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     SubscriptionManager mSubscriptionManager;
 
     private static final String LOG_TAG = "CordovaPluginSignalStrengthDualSim";
-    private static final String SIM_ONE_ASU = "Sim1ASU";
-    private static final String SIM_TWO_ASU = "Sim2ASU";
-    private static final String SIM_COUNT = 'SimCount';
+    private static final String SIM_ONE_ASU = "Sim1";
+    private static final String SIM_TWO_ASU = "Sim2";
+    private static final String SIM_COUNT = "SimCount";
     private static final String HAS_READ_PERMISSION = "hasReadPermission";
     private static final String REQUEST_READ_PERMISSION = "requestReadPermission";
     private CallbackContext callback;
