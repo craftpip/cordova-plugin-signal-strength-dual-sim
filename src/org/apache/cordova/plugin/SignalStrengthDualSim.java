@@ -119,12 +119,15 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             }
 
             JSONObject response = new JSONObject();
-            response.put("asu", asu);
-            response.put("operator_name", operatorName);
-            response.put("operator", operator);
-            response.put("networkType", netWorkTypeName);
-            response.put("NetworkTypeI", networkType);
-            response.put("level", level);
+            try {
+                response.put("asu", asu);
+                response.put("operator_name", operatorName);
+                response.put("operator", operator);
+                response.put("networkType", netWorkTypeName);
+                response.put("NetworkTypeI", networkType);
+                response.put("level", level);
+            } catch (JSONException e) {
+            }
 
             callback.success(response);
         }
