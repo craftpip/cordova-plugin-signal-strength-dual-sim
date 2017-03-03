@@ -110,9 +110,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         } else if (REQUEST_READ_PERMISSION.equals(action)) {
             requestReadPermission();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
 
