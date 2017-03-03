@@ -63,8 +63,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
             mSubscriptionManager = (SubscriptionManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
 
-            int slot;
-            if (SIM_ONE_ASU.equals(action)) {
+            int slot; if (SIM_ONE_ASU.equals(action)) {
                 slot = 0;
             } else {
                 slot = 1;
@@ -81,7 +80,8 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
             ssListener = new SignalStrengthStateListener();
 //            TelephonyManager defaultTelephonyManager  = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            TelephonyManager defaultTelephonyManager  = (TelephonyManager) Context.getSystemService(Context.TELEPHONY_SERVICE);
+            Context context = cordova.getActivity().getApplicationContext();
+            TelephonyManager defaultTelephonyManager  = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 //            LOG.i(LOG_TAG, "1: " + subId);
 
             TelephonyManager telephonyManagerSub;
