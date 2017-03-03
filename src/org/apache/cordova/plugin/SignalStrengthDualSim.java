@@ -67,10 +67,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 //                }
 //            }
 
-//            PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
-//            result.setKeepCallback(true);
-//            callback.sendPluginResult(result);
-            return true;
+            PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+            result.setKeepCallback(true);
+            return callback.sendPluginResult(result);
         }
 
         return false;
