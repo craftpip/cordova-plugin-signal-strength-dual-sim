@@ -80,8 +80,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             LOG.i(LOG_TAG, "SubID: " + subId);
 
             ssListener = new SignalStrengthStateListener();
-            TelephonyManager defaultTelephonyManager  = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            LOG.i(LOG_TAG, "1: " + subId);
+//            TelephonyManager defaultTelephonyManager  = (TelephonyManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            TelephonyManager defaultTelephonyManager  = (TelephonyManager) Context.getSystemService(Context.TELEPHONY_SERVICE);
+//            LOG.i(LOG_TAG, "1: " + subId);
 
             TelephonyManager telephonyManagerSub;
             try {
