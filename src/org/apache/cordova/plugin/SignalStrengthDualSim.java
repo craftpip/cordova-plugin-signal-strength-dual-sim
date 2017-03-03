@@ -67,6 +67,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 //                }
 //            }
 
+            PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+            result.setKeepCallback(true);
+            callback.sendPluginResult(result);
             return true;
         }
 
@@ -129,7 +132,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             } catch (JSONException e) {
             }
 
-            callback.success(response);
+            PluginResult result = new PluginResult(PluginResult.Status.OK, response);
+            result.setKeepCallback(false);
+            callback.sendPluginResult(result);
         }
     }
 
