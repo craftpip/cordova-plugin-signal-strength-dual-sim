@@ -67,9 +67,9 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 //                }
 //            }
 
-            PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
-            result.setKeepCallback(true);
-            callback.sendPluginResult(result);
+//            PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+//            result.setKeepCallback(true);
+//            callback.sendPluginResult(result);
             return true;
         }
 
@@ -85,11 +85,10 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             asu = tsNormSignalStrength;
             level = signalStrength.getLevel();
 
-            TelephonyManager defaultTelephonyManager2 = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            String operatorName = defaultTelephonyManager2.getNetworkOperatorName();
-            String operator = defaultTelephonyManager2.getNetworkOperator();
-            int networkType = defaultTelephonyManager2.getNetworkType();
-            int networkDataType = defaultTelephonyManager2.getDataNetworkType();
+            String operatorName = defaultTelephonyManager.getNetworkOperatorName();
+            String operator = defaultTelephonyManager.getNetworkOperator();
+            int networkType = defaultTelephonyManager.getNetworkType();
+            int networkDataType = defaultTelephonyManager.getDataNetworkType();
 
             String netWorkTypeName;
             switch (networkType) {
