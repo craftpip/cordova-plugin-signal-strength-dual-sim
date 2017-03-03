@@ -62,26 +62,21 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         } else if (SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)) {
 
             mSubscriptionManager = (SubscriptionManager) cordova.getActivity().getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
-            List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
 
-            if (subscriptions == null) {
-                return false;
+            int slot;
+            if (SIM_ONE_ASU.equals(action)) {
+                slot = 0;
+            } else {
+                slot = 1;
             }
 
-            final int num = subscriptions.size();
-            if (num <= 0)
-                return false;
+            subscriptionInfoObject = mSubscriptionManager.getActiveSubscriptionInfoForSimSlotIndex(slot);
 
-            LOG.i(LOG_TAG, "Num: " + num);
-
-            int subId = 0;
-            if (action.equals("0")) {
-                subId = subscriptions.get(0).getSubscriptionId();
-            }
-            if (action.equals("1")) {
-                subId = subscriptions.get(1).getSubscriptionId();
+            if (subscription == null) {
+                this.callback.error("Subscription returned null");
             }
 
+            int subId = subscriptionInfoObject.getSubscriptionId();
             LOG.i(LOG_TAG, "SubID: " + subId);
 
             ssListener = new SignalStrengthStateListener();
@@ -155,6 +150,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
             super.onSignalStrengthsChanged(signalStrength);
             int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
+            LOG.i(LOG_TAG, 'Signalstrength, '+ tsNormSignalStrength);
             dbm = (2 * tsNormSignalStrength) - 113;     // -> dBm
         }
 
