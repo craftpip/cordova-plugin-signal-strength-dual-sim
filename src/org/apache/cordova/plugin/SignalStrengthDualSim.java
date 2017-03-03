@@ -37,7 +37,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     private static final String SIM_COUNT = "SimCount";
     private static final String HAS_READ_PERMISSION = "hasReadPermission";
     private static final String REQUEST_READ_PERMISSION = "requestReadPermission";
-    private CallbackContext callback;
+    CallbackContext callback;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -85,10 +85,11 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             asu = tsNormSignalStrength;
             level = signalStrength.getLevel();
 
-            String operatorName = defaultTelephonyManager.getNetworkOperatorName();
-            String operator = defaultTelephonyManager.getNetworkOperator();
-            int networkType = defaultTelephonyManager.getNetworkType();
-            int networkDataType = defaultTelephonyManager.getDataNetworkType();
+            TelephonyManager defaultTelephonyManager2 = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            String operatorName = defaultTelephonyManager2.getNetworkOperatorName();
+            String operator = defaultTelephonyManager2.getNetworkOperator();
+            int networkType = defaultTelephonyManager2.getNetworkType();
+            int networkDataType = defaultTelephonyManager2.getDataNetworkType();
 
             String netWorkTypeName;
             switch (networkType) {
