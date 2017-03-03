@@ -27,6 +27,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
     int dbm = -1;
     int asu = 0;
+    int level = 0;
     TelephonyManager mTelephonyManager;
     SignalStrengthStateListener ssListener;
 
@@ -107,11 +108,12 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             }
 
             JSONObject response = new JSONObject();
-            response.put('dbm', dbm);
-            response.put('asu', asu);
-            response.put('operator_name', operatorName);
-            response.put('operator', operator);
-            response.put('networkType', netWorkTypeName)
+            response.put("dbm", dbm);
+            response.put("asu", asu);
+            response.put("operator_name", operatorName);
+            response.put("operator", operator);
+            response.put("networkType", netWorkTypeName);
+            response.put("level", level);
 
             callbackContext.success(response);
             return true;
@@ -168,6 +170,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
             LOG.i(LOG_TAG, "Signalstrength, " + tsNormSignalStrength);
             asu = tsNormSignalStrength;
+            level = signalStrength.getLevel();
             dbm = (2 * tsNormSignalStrength) - 113;
         }
     }
