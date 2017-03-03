@@ -126,7 +126,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             response.put("NetworkTypeI", networkType);
             response.put("level", level);
 
-            this.callback.success(response);
+            callback.success(response);
         }
     }
 
