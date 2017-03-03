@@ -79,6 +79,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
                 case TelephonyManager.NETWORK_TYPE_1xRTT:
                 case TelephonyManager.NETWORK_TYPE_IDEN:
                     netWorkTypeName = "2G";
+                    break;
                 case TelephonyManager.NETWORK_TYPE_UMTS:
                 case TelephonyManager.NETWORK_TYPE_EVDO_0:
                 case TelephonyManager.NETWORK_TYPE_EVDO_A:
@@ -89,8 +90,10 @@ public class SignalStrengthDualSim extends CordovaPlugin {
                 case TelephonyManager.NETWORK_TYPE_EHRPD:
                 case TelephonyManager.NETWORK_TYPE_HSPAP:
                     netWorkTypeName = "3G";
+                    break;
                 case TelephonyManager.NETWORK_TYPE_LTE:
                     netWorkTypeName = "4G";
+                    break;
                 default:
                     netWorkTypeName = "unknown";
                     break;
