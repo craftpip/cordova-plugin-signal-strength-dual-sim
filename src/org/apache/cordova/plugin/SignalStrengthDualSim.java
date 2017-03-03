@@ -105,7 +105,6 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             }
 
             JSONObject response = new JSONObject();
-            response.put("dbm", dbm);
             response.put("asu", asu);
             response.put("operator_name", operatorName);
             response.put("operator", operator);
@@ -128,7 +127,6 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             LOG.i(LOG_TAG, "Signalstrength, " + tsNormSignalStrength);
             asu = tsNormSignalStrength;
             level = signalStrength.getLevel();
-            dbm = (2 * tsNormSignalStrength) - 113;
         }
     }
 
