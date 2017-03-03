@@ -52,7 +52,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
             List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
             if (subscriptions == null) {
-                this.callback.error('Subscriptions returned null');
+                this.callback.error("Subscriptions returned null");
                 return false;
             }
 
