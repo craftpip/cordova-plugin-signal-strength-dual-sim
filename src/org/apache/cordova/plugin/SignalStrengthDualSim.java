@@ -150,7 +150,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
             super.onSignalStrengthsChanged(signalStrength);
             int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
-            LOG.i(LOG_TAG, 'Signalstrength, '+ tsNormSignalStrength);
+            LOG.i(LOG_TAG, "Signalstrength, " + tsNormSignalStrength);
             dbm = (2 * tsNormSignalStrength) - 113;     // -> dBm
         }
 
