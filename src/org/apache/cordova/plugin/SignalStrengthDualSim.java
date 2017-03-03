@@ -46,18 +46,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         LOG.i(LOG_TAG, "STARTING");
         LOG.i(LOG_TAG, "Params: " + action);
 
-        if (SIM_COUNT.equals(action)) {
-
-            List<SubscriptionInfo> subscriptions = mSubscriptionManager.getActiveSubscriptionInfoList();
-            if (subscriptions == null) {
-                this.callback.error("Subscriptions returned null");
-                return false;
-            }
-
-            final int num = subscriptions.size();
-            this.callback.success(num);
-
-        } else if (SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)) {
+        if (SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)) {
 
             ssListener = new SignalStrengthStateListener();
             Context context = cordova.getActivity().getApplicationContext();
@@ -126,41 +115,6 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         }
 
         return false;
-    }
-
-
-    private void hasReadPermission() {
-        this.callback.sendPluginResult(new PluginResult(PluginResult.Status.OK,
-                simPermissionGranted(Manifest.permission.READ_PHONE_STATE)));
-    }
-
-    private void requestReadPermission() {
-        requestPermission(Manifest.permission.READ_PHONE_STATE);
-    }
-
-    private boolean simPermissionGranted(String type) {
-        if (Build.VERSION.SDK_INT < 23) {
-            return true;
-        }
-        return cordova.hasPermission(type);
-    }
-
-    private void requestPermission(String type) {
-        LOG.i(LOG_TAG, "requestPermission");
-        if (!simPermissionGranted(type)) {
-            cordova.requestPermission(this, 12345, type);
-        } else {
-            this.callback.success();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            this.callback.success();
-        } else {
-            this.callback.error("Permission denied");
-        }
     }
 
     class SignalStrengthStateListener extends PhoneStateListener {
