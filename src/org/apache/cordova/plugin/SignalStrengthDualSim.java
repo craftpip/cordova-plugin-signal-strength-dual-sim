@@ -28,8 +28,8 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     int dbm = -1;
     int asu = 0;
     int level = 0;
-    TelephonyManager mTelephonyManager;
     SignalStrengthStateListener ssListener;
+    TelephonyManager defaultTelephonyManager;
 
     private static final String LOG_TAG = "CordovaPluginSignalStrengthDualSim";
     private static final String SIM_ONE_ASU = "Sim1";
@@ -53,25 +53,39 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             TelephonyManager defaultTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             defaultTelephonyManager.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
-            int counter = 0;
-            while (dbm == -1) {
-                LOG.i(LOG_TAG, "while " + dbm);
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
+//            int counter = 0;
+//            while (dbm == -1) {
+//                LOG.i(LOG_TAG, "while " + dbm);
+//                try {
+//                    Thread.sleep(200);
+//                } catch (InterruptedException e) {
+//
+//                    return false;
+//                }
+//                if (counter++ >= 5) {
+//                    break; // return -1
+//                }
+//            }
 
-                    return false;
-                }
-                if (counter++ >= 5) {
-                    break; // return -1
-                }
-            }
+            return true;
+        }
+
+        return false;
+    }
+
+    class SignalStrengthStateListener extends PhoneStateListener {
+        @Override
+        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
+            super.onSignalStrengthsChanged(signalStrength);
+            int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
+            LOG.i(LOG_TAG, "Signalstrength, " + tsNormSignalStrength);
+            asu = tsNormSignalStrength;
+            level = signalStrength.getLevel();
 
             String operatorName = defaultTelephonyManager.getNetworkOperatorName();
             String operator = defaultTelephonyManager.getNetworkOperator();
             int networkType = defaultTelephonyManager.getNetworkType();
             int networkDataType = defaultTelephonyManager.getDataNetworkType();
-
 
             String netWorkTypeName;
             switch (networkType) {
@@ -112,21 +126,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             response.put("NetworkTypeI", networkType);
             response.put("level", level);
 
-            callbackContext.success(response);
-            return true;
-        }
-
-        return false;
-    }
-
-    class SignalStrengthStateListener extends PhoneStateListener {
-        @Override
-        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
-            super.onSignalStrengthsChanged(signalStrength);
-            int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
-            LOG.i(LOG_TAG, "Signalstrength, " + tsNormSignalStrength);
-            asu = tsNormSignalStrength;
-            level = signalStrength.getLevel();
+            this.callback.success(response);
         }
     }
 
