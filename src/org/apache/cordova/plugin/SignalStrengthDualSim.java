@@ -89,6 +89,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
             int counter = 0;
             while (dbm == -1) {
+                LOG.i(LOG_TAG, "while " + dbm);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -152,12 +153,12 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     class SignalStrengthStateListener extends PhoneStateListener {
         @Override
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
+            LOG.i(LOG_TAG, "SignalstrengthCalled , ");
             super.onSignalStrengthsChanged(signalStrength);
             int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
             LOG.i(LOG_TAG, "Signalstrength, " + tsNormSignalStrength);
             dbm = (2 * tsNormSignalStrength) - 113;     // -> dBm
         }
-
     }
 
 }
