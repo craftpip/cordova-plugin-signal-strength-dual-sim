@@ -78,6 +78,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
                 case TelephonyManager.NETWORK_TYPE_CDMA:
                 case TelephonyManager.NETWORK_TYPE_1xRTT:
                 case TelephonyManager.NETWORK_TYPE_IDEN:
+                case TelephonyManager.NETWORK_TYPE_GSM:
                     netWorkTypeName = "2G";
                     break;
                 case TelephonyManager.NETWORK_TYPE_UMTS:
