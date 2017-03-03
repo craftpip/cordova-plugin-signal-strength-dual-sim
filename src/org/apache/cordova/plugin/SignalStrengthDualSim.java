@@ -71,14 +71,15 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             String operator = defaultTelephonyManager.getNetworkOperator();
             int networkType = defaultTelephonyManager.getNetworkType();
 
+
             String netWorkTypeName;
             switch (networkType) {
                 case TelephonyManager.NETWORK_TYPE_GPRS:
+                case TelephonyManager.NETWORK_TYPE_GSM:
                 case TelephonyManager.NETWORK_TYPE_EDGE:
                 case TelephonyManager.NETWORK_TYPE_CDMA:
                 case TelephonyManager.NETWORK_TYPE_1xRTT:
                 case TelephonyManager.NETWORK_TYPE_IDEN:
-                case TelephonyManager.NETWORK_TYPE_GSM:
                     netWorkTypeName = "2G";
                     break;
                 case TelephonyManager.NETWORK_TYPE_UMTS:
@@ -90,9 +91,11 @@ public class SignalStrengthDualSim extends CordovaPlugin {
                 case TelephonyManager.NETWORK_TYPE_EVDO_B:
                 case TelephonyManager.NETWORK_TYPE_EHRPD:
                 case TelephonyManager.NETWORK_TYPE_HSPAP:
+                case TelephonyManager.NETWORK_TYPE_TD_SCDMA:
                     netWorkTypeName = "3G";
                     break;
                 case TelephonyManager.NETWORK_TYPE_LTE:
+                case TelephonyManager.NETWORK_TYPE_IWLAN:
                     netWorkTypeName = "4G";
                     break;
                 default:
