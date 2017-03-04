@@ -49,7 +49,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         if (SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)) {
 
             Context context = cordova.getActivity().getApplicationContext();
-            ssListener = new SignalStrengthStateListener(callback, context);
+            ssListener = new SignalStrengthStateListener();
             TelephonyManager defaultTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             defaultTelephonyManager.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
