@@ -22,8 +22,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import sun.plugin2.jvm.RemoteJVMLauncher;
-
 
 public class SignalStrengthDualSim extends CordovaPlugin {
 
@@ -83,12 +81,12 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
     class SignalStrengthStateListener extends PhoneStateListener {
 
-        CallbackContext callback;
-        Context context;
-        public void SignalStrengthStateListener(CallbackContext callbackContext, Context appContext){
-            callback = callbackContext;
-            context = appContext;
-        }
+//        CallbackContext callback;
+//        Context context;
+//        public void SignalStrengthStateListener(CallbackContext callbackContext, Context appContext){
+//            callback = callbackContext;
+//            context = appContext;
+//        }
 
         @Override
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
@@ -100,6 +98,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             level = signalStrength.getLevel();
 
 
+            Context context = cordova.getActivity().getApplicationContext();
             TelephonyManager defaultTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             String operatorName = defaultTelephonyManager.getNetworkOperatorName();
             String operator = defaultTelephonyManager.getNetworkOperator();
