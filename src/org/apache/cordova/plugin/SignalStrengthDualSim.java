@@ -79,7 +79,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
         return false;
     }
 
-    class SignalStrengthStateListener extends PhoneStateListener {
+    class SignalStrengthStateListener extends PhoneStateListener  {
 
 //        CallbackContext callback;
 //        Context context;
@@ -89,7 +89,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 //        }
 
         @Override
-        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
+        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) throws JSONException {
 
             super.onSignalStrengthsChanged(signalStrength);
             int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
