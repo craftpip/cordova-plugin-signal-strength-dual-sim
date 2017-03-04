@@ -89,7 +89,7 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 //        }
 
         @Override
-        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) throws JSONException {
+        public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
 
             super.onSignalStrengthsChanged(signalStrength);
             int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
@@ -137,13 +137,17 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             }
 
             JSONObject response = new JSONObject();
-            response.put("operator_name", operatorName);
-            response.put("operator", operator);
-            response.put("networkType", netWorkTypeName);
-            response.put("NetworkTypeI", networkType);
-            response.put("asu", asu);
-            response.put("level", level);
 
+            try {
+                response.put("operator_name", operatorName);
+                response.put("operator", operator);
+                response.put("networkType", netWorkTypeName);
+                response.put("NetworkTypeI", networkType);
+                response.put("asu", asu);
+                response.put("level", level);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
 
             PluginResult result = new PluginResult(PluginResult.Status.OK, response);
