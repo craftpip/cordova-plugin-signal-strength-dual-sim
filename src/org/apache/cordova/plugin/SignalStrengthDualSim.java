@@ -22,6 +22,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import sun.plugin2.jvm.RemoteJVMLauncher;
+
 
 public class SignalStrengthDualSim extends CordovaPlugin {
 
@@ -48,10 +50,11 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 
         if (SIM_ONE_ASU.equals(action) || SIM_TWO_ASU.equals(action)) {
 
-            ssListener = new SignalStrengthStateListener();
+            ssListener = new SignalStrengthStateListener(callback);
             Context context = cordova.getActivity().getApplicationContext();
             TelephonyManager defaultTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             defaultTelephonyManager.listen(ssListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+
 
 //            int counter = 0;
 //            while (dbm == -1) {
@@ -67,6 +70,8 @@ public class SignalStrengthDualSim extends CordovaPlugin {
 //                }
 //            }
 
+//            callback.success();
+
             PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
             result.setKeepCallback(true);
             return callback.sendPluginResult(result);
@@ -76,14 +81,23 @@ public class SignalStrengthDualSim extends CordovaPlugin {
     }
 
     class SignalStrengthStateListener extends PhoneStateListener {
+
+        CallbackContext callback;
+        public void SignalStrengthStateListener(CallbackContext callbackContext){
+            callback = callbackContext;
+        }
+
         @Override
         public void onSignalStrengthsChanged(android.telephony.SignalStrength signalStrength) {
+
             super.onSignalStrengthsChanged(signalStrength);
             int tsNormSignalStrength = signalStrength.getGsmSignalStrength();
             LOG.i(LOG_TAG, "Signalstrength, " + tsNormSignalStrength);
             asu = tsNormSignalStrength;
             level = signalStrength.getLevel();
 
+
+            TelephonyManager defaultTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             String operatorName = defaultTelephonyManager.getNetworkOperatorName();
             String operator = defaultTelephonyManager.getNetworkOperator();
             int networkType = defaultTelephonyManager.getNetworkType();
@@ -121,15 +135,14 @@ public class SignalStrengthDualSim extends CordovaPlugin {
             }
 
             JSONObject response = new JSONObject();
-            try {
-                response.put("asu", asu);
-                response.put("operator_name", operatorName);
-                response.put("operator", operator);
-                response.put("networkType", netWorkTypeName);
-                response.put("NetworkTypeI", networkType);
-                response.put("level", level);
-            } catch (JSONException e) {
-            }
+            response.put("operator_name", operatorName);
+            response.put("operator", operator);
+            response.put("networkType", netWorkTypeName);
+            response.put("NetworkTypeI", networkType);
+            response.put("asu", asu);
+            response.put("level", level);
+
+
 
             PluginResult result = new PluginResult(PluginResult.Status.OK, response);
             result.setKeepCallback(false);
